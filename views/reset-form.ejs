@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family: sans-serif; padding: 50px; text-align: center;">
+    <h2>Create New Password</h2>
+    <% if (error) { %>
+        <p style="color: red;">
+            <%= error %>
+        </p>
+        <% } %>
+            <form action="/reset-password" method="POST">
+                <input type="hidden" name="token" value="<%= token %>">
+
+                <input type="password" name="password" placeholder="New Password" required><br><br>
+                <button type="submit">Set New Password</button>
+            </form>
+</body>
+
+</html>

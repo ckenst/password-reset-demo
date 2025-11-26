@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family: sans-serif; padding: 50px; text-align: center;">
+    <h2>Reset Password</h2>
+    <% if (message) { %>
+        <p style="color: green; font-weight: bold;">
+            <%= message %>
+        </p>
+        <% } %>
+            <form action="/request-reset" method="POST">
+                <p>Enter your email to receive a reset link:</p>
+                <input type="email" name="email" placeholder="user@example.com" required>
+                <button type="submit">Send Reset Link</button>
+            </form>
+            <br>
+            <a href="/">Back to Login</a>
+</body>
+
+</html>
