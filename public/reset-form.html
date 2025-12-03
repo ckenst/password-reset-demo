@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family: sans-serif; padding: 50px; text-align: center;">
+    <h2>Create New Password</h2>
+    <p id="error-msg" style="color: red; display: none;"></p>
+
+    <form action="/reset-password" method="POST">
+        <input type="hidden" name="token" id="token-field">
+
+        <input type="password" name="password" placeholder="New Password" required><br><br>
+        <button type="submit">Set New Password</button>
+    </form>
+
+    <script>
+        // Extract token from path: /reset/:token
+        // Since we are serving this static file, we might need to rely on the server rewriting the URL 
+        // OR we can change the link structure to /reset-form.html?token=...
+        // BUT the plan said: "The server will serve this file for the /reset/:token route".
+        // If the server serves this file for /reset/123, then window.location.pathname will be /reset/123.
+
+        const pathParts = window.location.pathname.split('/');
+        const token = pathParts[pathParts.length - 1]; // Assumes /reset/TOKEN format
+
+        if (token) {
+            document.getElementById('token-field').value = token;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            const errorMsg = document.getElementById('error-msg');
+            errorMsg.textContent = error;
+            errorMsg.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

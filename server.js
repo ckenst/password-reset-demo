@@ -10,7 +10,8 @@ const app = express();
 const PORT = 3000;
 
 // --- CONFIGURATION ---
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs'); // REMOVED
+app.use(express.static('public')); // ADDED
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- IN-MEMORY DATABASE ---
@@ -30,36 +31,30 @@ const transporter = nodemailer.createTransport({
 // --- ROUTES ---
 
 // 1. Login Page
-app.get('/', (req, res) => {
-    res.render('login', { error: null });
-});
+// Served automatically by express.static (index.html)
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
     // Simple Logic: Email must have '@' and password > 5 chars
     if (email.includes('@') && password.length > 5) {
-        res.redirect('/landing');
+        res.redirect('/landing.html');
     } else {
-        res.render('login', { error: 'Invalid email or password (must be > 5 chars)' });
+        res.redirect('/?error=Invalid email or password (must be > 5 chars)');
     }
 });
 
 // 2. Landing Page (Successful Login)
-app.get('/landing', (req, res) => {
-    res.render('landing');
-});
+// Served automatically by express.static (landing.html)
 
 // 3. Request Reset Page
-app.get('/request-reset', (req, res) => {
-    res.render('request-reset', { message: null });
-});
+// Served automatically by express.static (request-reset.html)
 
 app.post('/request-reset', (req, res) => {
     const { email } = req.body;
 
     if (!email.includes('@')) {
-        return res.render('request-reset', { message: 'Please enter a valid email.' });
+        return res.redirect('/request-reset.html?message=Please enter a valid email.');
     }
 
     // Generate a unique token
@@ -83,10 +78,10 @@ app.post('/request-reset', (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error);
-            return res.render('request-reset', { message: 'Error sending email. Check server console.' });
+            return res.redirect('/request-reset.html?message=Error sending email. Check server console.');
         }
         console.log('Email sent: ' + info.response);
-        res.render('request-reset', { message: `Check ${email} for the reset link!` });
+        res.redirect(`/request-reset.html?message=Check ${email} for the reset link!`);
     });
 });
 
@@ -96,7 +91,8 @@ app.get('/reset/:token', (req, res) => {
 
     // Verify token exists
     if (resetTokens.has(token)) {
-        res.render('reset-form', { token: token, error: null });
+        // Serve the static file. The client-side JS will extract the token from the URL.
+        res.sendFile(path.join(__dirname, 'public', 'reset-form.html'));
     } else {
         res.send('<h1>Invalid or Expired Token</h1><a href="/">Go Back</a>');
     }
@@ -117,16 +113,17 @@ app.post('/reset-password', (req, res) => {
         // Delete the used token (Single Use)
         resetTokens.delete(token);
 
-        res.redirect('/confirmation');
+        res.redirect('/confirmation.html');
     } else {
-        res.render('reset-form', { token: token, error: 'Password must be > 5 chars' });
+        // Redirect back to the reset form with the token and error
+        // Note: We need to redirect to the same URL structure /reset/:token so the file is served correctly
+        // OR we can redirect to /reset/:token?error=...
+        res.redirect(`/reset/${token}?error=Password must be > 5 chars`);
     }
 });
 
 // 5. Confirmation Page
-app.get('/confirmation', (req, res) => {
-    res.render('confirmation');
-});
+// Served automatically by express.static (confirmation.html)
 
 // Start Server
 app.listen(PORT, () => {

@@ -2,7 +2,7 @@
 
 This is a simple but fully functional password reset demo using Node.js, Express, and Nodemailer.
 
-Demo Functionality:
+## Functionality:
 
 1. You can request a password reset, using your email address
 2. Your Gmail account will send the reset email to the email address you provided
@@ -12,11 +12,18 @@ Demo Functionality:
 
 ## Prerequisites
 
-In order for this to work, you'll need an app password from your Gmail. That's because the reset password is actually sent from your Gmail account.
-To get an app password from Gmail, go to your Google Account settings > Security > App Passwords and create an app password. Then, add the following environment variables to your .env file:
+1. Node.js
+2. You'll need an app password from your Gmail account 
+
+## Setup
+
+1. Run `npm install` to install dependencies.
+2. Go to your Google Account settings > Security > App Passwords and create an app password. 
+3. Rename `.env.example` to `.env` and add your Gmail credentials:
 
 ```
 GMAIL_USER=your-gmail-address
 GMAIL_PASSWORD=your-app-password
 ```
-Finally you just run `node server.js` and navigate to `http://localhost:3000` in your browser.
+
+4. Finally you just run `node server.js` and navigate to `http://localhost:3000` in your browser.

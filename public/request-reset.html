@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<body style="font-family: sans-serif; padding: 50px; text-align: center;">
+    <h2>Reset Password</h2>
+    <p id="message-msg" style="color: green; font-weight: bold; display: none;"></p>
+
+    <form action="/request-reset" method="POST">
+        <p>Enter your email to receive a reset link:</p>
+        <input type="email" name="email" placeholder="user@example.com" required>
+        <button type="submit">Send Reset Link</button>
+    </form>
+    <br>
+    <a href="/">Back to Login</a>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        if (message) {
+            const msgElement = document.getElementById('message-msg');
+            msgElement.textContent = message;
+            msgElement.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
